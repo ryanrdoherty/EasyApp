@@ -1,0 +1,197 @@
+package edu.upenn.bbl.common.auth;
+
+import java.util.Comparator;
+import java.util.ResourceBundle;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import edu.upenn.bbl.common.exception.ConfigurationRuntimeException;
+
+/**
+ * Holds values used to configure and determine how an <code>Authenticator</code>
+ * retrieves access roles and other verification information for applications.
+ * 
+ * @author rdoherty
+ *
+ */
+public class AuthConfig implements Comparator<AuthConfig>, Comparable<AuthConfig> {
+
+	/**
+	 * An authorization source type (what type of resource is
+	 * being queried for authorization credentials).
+	 * 
+	 * @author rdoherty
+	 */
+	public enum Type {
+		DATABASE,
+		LDAP;
+	}
+
+	public static final String AUTH_TYPE = "auth.type";
+	public static final String AUTH_CONNECTION_URL = "auth.connection.url";
+	public static final String AUTH_NAME = "auth.login.name";
+	public static final String AUTH_PASSWORD = "auth.password";
+	
+	private Type _type;
+	private String _connectionUrl;
+	private String _loginName;
+	private String _password;
+	
+	/**
+	 * No-param constructor.  User is required to set attributes.
+	 */
+	public AuthConfig() {
+		// do nothing; user must set all params with this constructor
+	}
+
+	/**
+	 * Constructor takes a resource bundle name and parses it for required parameters
+	 * 
+	 * @param bundleName name of bundle from which params will be pulled
+	 */
+	public AuthConfig(String bundleName) {
+		try {
+			ResourceBundle bundle = ResourceBundle.getBundle(bundleName);
+			setType(AuthConfig.Type.valueOf(bundle.getString(AUTH_TYPE).toUpperCase()));
+			setConnectionUrl(bundle.getString(AUTH_CONNECTION_URL));
+			setLoginName(bundle.getString(AUTH_NAME));
+			setPassword(bundle.getString(AUTH_PASSWORD));
+			assertComplete();
+		}
+		catch (AuthenticationException ae) {
+			throw new ConfigurationRuntimeException("Unable to properly configure authentication", ae);
+		}
+	}
+	
+	/**
+	 * @return authorization type for this configuration
+	 */
+	public Type getType() {
+		return _type;
+	}
+	
+	/**
+	 * @param type type to set on this configuration
+	 */
+	public void setType(Type type) {
+		_type = type;
+	}
+	
+	/**
+	 * @return connection type for this configuration
+	 */
+	public String getConnectionUrl() {
+		return _connectionUrl;
+	}
+	
+	/**
+	 * @param connectionUrl url to set for this configuration
+	 */
+	public void setConnectionUrl(String connectionUrl) {
+		_connectionUrl = connectionUrl;
+	}
+
+	/**
+	 * @return login name for this configuration
+	 */
+	public String getLoginName() {
+		return _loginName;
+	}
+	
+	/**
+	 * @param loginName login name to set for this configuration
+	 */
+	public void setLoginName(String loginName) {
+		_loginName = loginName;
+	}
+
+	/**
+	 * @return password for this configuration
+	 */
+	public String getPassword() {
+		return _password;
+	}
+	
+	/**
+	 * @param password password to set for this configuration
+	 */
+	public void setPassword(String password) {
+		_password = password;
+	}
+
+	/**
+	 * Creates a copy of this object and returns it
+	 * 
+	 * @return copy with identical config params
+	 */
+	public AuthConfig createCopy() {
+		AuthConfig config = new AuthConfig();
+		config.setType(_type);
+		config.setConnectionUrl(_connectionUrl);
+		config.setLoginName(_loginName);
+		config.setPassword(_password);
+		return config;
+	}
+	
+	/**
+	 * Implementation of compare to allow sorting of AuthConfigs
+	 */
+	@Override
+	public int compare(AuthConfig o1, AuthConfig o2) {
+		if (o1._type.compareTo(o2._type) != 0) {
+			return o1._type.compareTo(o2._type);
+		}
+		if (o1._connectionUrl.compareTo(o2._connectionUrl) != 0) {
+			return o1._connectionUrl.compareTo(o2._connectionUrl);
+		}
+		if (o1._loginName.compareTo(o2._loginName) != 0) {
+			return o1._loginName.compareTo(o2._loginName);
+		}
+		if (o1._password.compareTo(o2._password) != 0) {
+			return o1._password.compareTo(o2._password);
+		}
+		return 0;
+	}
+
+	/**
+	 * Implementation of compareTo to allow sorting of AuthConfigs.
+	 * Simply calls compare(this, o).
+	 */
+	@Override
+	public int compareTo(AuthConfig o) {
+		return compare(this, o);
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof AuthConfig)) {
+			return false;
+		}
+		return (compareTo((AuthConfig)o) == 0);
+	}
+	
+	/**
+	 * Override of hashCode to complement equals()
+	 */
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+	
+	/**
+	 * Asserts that properties of this configuration have all been set.
+	 * 
+	 * @throws AuthenticationException if they have not
+	 */
+	public void assertComplete() throws AuthenticationException {
+		// for now, just make sure type is database and the other properties are set
+		if (!_type.equals(Type.DATABASE) ||
+			StringUtils.isEmpty(_connectionUrl) ||
+			StringUtils.isEmpty(_loginName) ||
+			StringUtils.isEmpty(_password)) {
+			throw new AuthenticationException("Not all parameters have been set for this configuration.");
+		}
+	}
+	
+}
