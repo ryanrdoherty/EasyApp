@@ -1,10 +1,15 @@
 package edu.upenn.bbl.common.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class which can serve as a parent to any classes that need to
@@ -17,7 +22,25 @@ import org.apache.commons.lang.math.NumberUtils;
  */
 public abstract class DataValidator {
 
+	private static final Logger LOG = LoggerFactory.getLogger(DataValidator.class.getName());
+
+	/**
+	 * This format is useful because it is the default Struts2 converted format (i.e. when
+	 * struts populates text fields with dates, this is the default format displayed).
+	 */
+	protected static final String DATE_FORMAT_STR = "yyyy-MM-dd";
+	
 	private List<String> _validationErrors = new ArrayList<String>();
+	
+	public static Date convertDate(String date) {
+		try {
+			return new SimpleDateFormat(DATE_FORMAT_STR).parse(date);
+		}
+		catch (ParseException e) {
+			LOG.error("Unable to parse date input: " + date);
+			return null;
+		}
+	}
 	
 	/**
 	 * Returns whether the field is empty, regardless of type.
