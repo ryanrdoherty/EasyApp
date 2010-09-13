@@ -1,0 +1,13 @@
+*.a
+*.o
+*.py[co]
+*.so
+*.sw[nop]
+*~
+.#*
+[#]*#
+.project
+.settings
+.classpath
+target
+.DS_Store
