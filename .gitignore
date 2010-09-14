@@ -11,3 +11,4 @@
 .classpath
 target
 .DS_Store
+.bzr
