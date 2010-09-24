@@ -11,13 +11,17 @@ import edu.upenn.bbl.common.enums.ifc.Named;
  * @author rdoherty
  */
 public enum NameSuffix implements Named, Described {
-	SR("Sr."),
-	JR("Jr."),
-	II("II"),
-	III("III"),
-	IV("IV"),
-	MD("MD"),
-	PNP("PNP");
+	SR  ("Sr."),
+	JR  ("Jr."),
+	II  ("II"),
+	III ("III"),
+	IV  ("IV"),
+	V   ("V"),
+	MD  ("M.D."),  // medical doctor
+	DO  ("D.O."),  // doctor of osteopathic medicine
+	PHD ("Ph.D."), // doctor of philosophy
+	JD  ("J.D."),  // juris doctor
+	PNP ("PNP");   // unknown (maybe a mistake from CNP?)
 	
 	private String _description;
 	
@@ -33,10 +37,7 @@ public enum NameSuffix implements Named, Described {
 			return null;
 		}
 		for (NameSuffix obj : NameSuffix.values()) {
-			String desc = obj.getDescription();
-			if (desc.equalsIgnoreCase(string) ||
-			    (desc.endsWith(".") &&
-			     desc.substring(0, desc.length()-1).equalsIgnoreCase(string))) {
+			if (string.replace(".", "").equalsIgnoreCase(obj.getDescription().replace(".", ""))) {
 				return obj;
 			}
 		}

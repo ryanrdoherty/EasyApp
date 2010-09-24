@@ -10,7 +10,6 @@ import edu.upenn.bbl.common.enums.ifc.Named;
  * @author rdoherty
  */
 public enum Ethnicity implements Named, Described, Coded {
-	
 	HISPANIC(1, "Hispanic"),
 	NON_HISPANIC(2, "Non-Hispanic"),
 	UNKNOWN(9, "Unknown");
