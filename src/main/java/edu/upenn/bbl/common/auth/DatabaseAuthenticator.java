@@ -12,7 +12,9 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.upenn.bbl.common.db.DataSourceFactory;
 import edu.upenn.bbl.common.db.DbUtil;
+import edu.upenn.bbl.common.exception.BBLRuntimeException;
 
 /**
  * Authenticates users and assigns access roles based on custom database
@@ -49,6 +51,22 @@ public class DatabaseAuthenticator implements Authenticator {
 	 */
 	public DatabaseAuthenticator(AuthConfig config) throws AuthenticationException {
 		_ds = AuthDataSource.getInstance(config).getDataSource();
+	}
+
+	/**
+	 * Creates a new instance using a DataSource configured in JNDI.  Looks up
+	 * the resource using the passed name.
+	 * 
+	 * @param jndiName JNDI name the desired data source is registered under
+	 * @throws AuthenticationException if unable to look up data source
+	 */
+	public DatabaseAuthenticator(String jndiName) throws AuthenticationException {
+		try {
+			_ds = DataSourceFactory.getJndiDataSource(jndiName);
+		}
+		catch (BBLRuntimeException e) {
+			throw new AuthenticationException("Unable to look up Authentication DataSource", e);
+		}
 	}
 
 	/**

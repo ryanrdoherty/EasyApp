@@ -53,6 +53,9 @@ public class DateTypeConverter extends StrutsTypeConverter {
 					"This method only accepts a single value in the array, not " + values.length);
 		}			
 		try {
+			if (StringUtils.isEmpty(values[0])) {
+				return null;
+			}
 			return formatter.parse(values[0]);
 		}
 		catch (ParseException pe) {
@@ -76,6 +79,9 @@ public class DateTypeConverter extends StrutsTypeConverter {
 	@SuppressWarnings("unchecked")
 	public String convertToString(Map map, Object value) {
 		LOG.info("convertToString being called with: " + map + ", " + value + ", " + value.getClass());
+		if (value == null) {
+			return "";
+		}
 		if (value instanceof Date) {
 			SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT_STR);
 			return formatter.format((Date)value);

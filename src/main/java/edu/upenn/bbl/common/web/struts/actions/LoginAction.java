@@ -8,9 +8,11 @@ import com.opensymphony.xwork2.ActionContext;
 
 import edu.upenn.bbl.common.auth.AuthConfig;
 import edu.upenn.bbl.common.auth.AuthFactory;
+import edu.upenn.bbl.common.auth.AuthenticationException;
 import edu.upenn.bbl.common.auth.Authenticator;
 import edu.upenn.bbl.common.auth.EncryptionUtil;
 import edu.upenn.bbl.common.auth.User;
+import edu.upenn.bbl.common.exception.BBLRuntimeException;
 
 /**
  * Attempts to log user into the application using the authentication settings in
@@ -26,7 +28,7 @@ public class LoginAction extends BaseAction {
 	
 	private static final String AUTH_CONFIG_BUNDLE = "authentication";
 
-	private static AuthConfig _authConfig = new AuthConfig(AUTH_CONFIG_BUNDLE);
+	private static Authenticator _auth = getAuthenticator();
 	
 	private String _username;
 	private String _password;
@@ -43,6 +45,23 @@ public class LoginAction extends BaseAction {
 		return false;
 	}
 
+	private static Authenticator getAuthenticator() {
+		try {
+			AuthConfig authConfig = new AuthConfig(AUTH_CONFIG_BUNDLE);
+			return AuthFactory.getAuthenticator(authConfig);
+		}
+		catch (Exception e1) {
+			LOG.warn("Unable to look up authentication properties using bundle " +
+					"(bundle may not be present).  Will use default authenticator.", e1);
+			try {
+				return AuthFactory.getAuthenticator();
+			}
+			catch (AuthenticationException e2) {
+				throw new BBLRuntimeException("Unable to create default authenticator", e2);
+			}
+		}
+	}
+	
 	/**
 	 * Attempts to log user into the application using the authentication settings in
      * authentication.properties.
@@ -56,10 +75,9 @@ public class LoginAction extends BaseAction {
 			_message = "Please enter both a username and password.";
 			return INPUT;
 		}
-		Authenticator auth = AuthFactory.getAuthenticator(_authConfig);
 		String encryptedPassword = EncryptionUtil.encrypt(getPassword(), EncryptionUtil.Algorithm.SHA);
 		LOG.debug("Asking authenticator for user as defined by: " + getUsername() + " and " + encryptedPassword);
-		User user = auth.getAuthenticatedUser(getUsername(), encryptedPassword);
+		User user = _auth.getAuthenticatedUser(getUsername(), encryptedPassword);
 		if (user == null) {
 			LOG.debug("Could not authenticate user:password combination " + getUsername() + ":" + encryptedPassword);
 			_message = "Invalid username/password combination.  Please try again.";

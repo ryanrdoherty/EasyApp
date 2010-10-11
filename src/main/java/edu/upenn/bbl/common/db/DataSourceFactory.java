@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import edu.upenn.bbl.common.exception.BBLRuntimeException;
@@ -24,6 +27,26 @@ public class DataSourceFactory {
 	private static final int DB_MAX_CONNECTION_TIME_MS = 600000;
 		
 	private static Map<DataSourceConfig, DataSource> _dataSourceMap = new HashMap<DataSourceConfig, DataSource>();
+	
+	/**
+	 * Looks up a DataSource in JNDI registered under the passed name and returns it.
+	 * Note: This assumes the Tomcat implementation of JNDI.
+	 * 
+	 * @param jndiName name with which data source should be looked up
+	 * @return data source registered through JNDI
+	 * @throws BBLRuntimeException if no DataSource is configured with that name
+	 */
+	public static DataSource getJndiDataSource(String jndiName) {
+		try {
+			Context context = new InitialContext();
+			Context envContext = (Context) context.lookup("java:comp/env");
+			DataSource ds = (DataSource)envContext.lookup(jndiName);
+			return ds;
+		}
+		catch (NamingException ne) {
+			throw new BBLRuntimeException("Unable to look up DataSource using JNDI name " + jndiName, ne);
+		}
+	}
 	
 	/**
 	 * Fetches an Oracle DataSource given the passed properties.

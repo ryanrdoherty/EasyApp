@@ -8,6 +8,20 @@ package edu.upenn.bbl.common.auth;
  */
 public class AuthFactory {
 
+	private static final String AUTH_DATASOURCE_JNDI_NAME = "jdbc/AuthenticationDS";
+	
+	/**
+	 * Returns the default Authenticator, which connects to a database using the
+	 * BBL standard JNDI name under which a data source to the BBL authentication
+	 * database should be registered.
+	 * 
+	 * @return default Authenticator
+	 * @throws AuthenticationException if error occurs creating Authenticator
+	 */
+	public static Authenticator getAuthenticator() throws AuthenticationException {
+		return new DatabaseAuthenticator(AUTH_DATASOURCE_JNDI_NAME);
+	}
+	
 	/**
 	 * Checks config and returns an appropriate <code>Authenticator</code>.
 	 * 
