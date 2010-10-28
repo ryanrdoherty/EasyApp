@@ -30,6 +30,7 @@ import edu.upenn.bbl.common.exception.BBLRuntimeException;
  */
 public class DatabaseAuthenticator implements Authenticator {
 
+	@SuppressWarnings("unused")
 	private static Logger LOG = LoggerFactory.getLogger(DatabaseAuthenticator.class.getName());
 	
 	private static final String GET_UNAUTH_USER_ATTRIBUTES =
@@ -105,7 +106,7 @@ public class DatabaseAuthenticator implements Authenticator {
 				u.setLastName(rs.getString(3));
 				String coord = rs.getString(4);
 				if (coord != null && coord.equals("Y")) {
-					u.addAccessRole(AccessRole.COORDINATOR);
+					u.addAccessRole("COORDINATOR");
 				}
 				u.addAccessRoles(getAccessRoles(u));
 				return u;
@@ -120,8 +121,8 @@ public class DatabaseAuthenticator implements Authenticator {
 		}
 	}
 
-	private Set<AccessRole> getAccessRoles(User user) throws AuthenticationException {
-		Set<AccessRole> list = new HashSet<AccessRole>();
+	private Set<String> getAccessRoles(User user) throws AuthenticationException {
+		Set<String> list = new HashSet<String>();
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -131,13 +132,7 @@ public class DatabaseAuthenticator implements Authenticator {
 			ps.setString(1, user.getUsername());
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				String role = rs.getString(1);
-				try {
-					list.add(AccessRole.valueOf(role));
-				}
-				catch (IllegalArgumentException iae) {
-					LOG.warn("Role " + role + " for user " + user.getUsername() + " is not valid.  Skipping.", iae);
-				}
+				list.add(rs.getString(1));
 			}
 			return list;
 		}

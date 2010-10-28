@@ -17,7 +17,7 @@ public class User {
 	private String _lastName;
 	private String _title;
 	private String _emailAddress;
-	private Set<AccessRole> _accessRoles = new HashSet<AccessRole>();
+	private Set<String> _accessRoles = new HashSet<String>();
 	
 	public Long getId() {
 		return _id;
@@ -61,16 +61,16 @@ public class User {
 		_emailAddress = emailAddress;
 	}
 	
-	public Set<AccessRole> getAccessRoles() {
+	public Set<String> getAccessRoles() {
 		return _accessRoles;
 	}
-	public void setAccessRoles(Set<AccessRole> accessRoles) {
+	public void setAccessRoles(Set<String> accessRoles) {
 		_accessRoles = accessRoles;
 	}
-	public void addAccessRole(AccessRole accessRole) {
+	public void addAccessRole(String accessRole) {
 		_accessRoles.add(accessRole);
 	}
-	public void addAccessRoles(Collection<AccessRole> accessRoles) {
+	public void addAccessRoles(Collection<String> accessRoles) {
 		_accessRoles.addAll(accessRoles);
 	}
 	

@@ -13,7 +13,6 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
-import edu.upenn.bbl.common.auth.AccessRole;
 import edu.upenn.bbl.common.auth.User;
 import edu.upenn.bbl.common.enums.Ethnicity;
 import edu.upenn.bbl.common.enums.Handedness;
@@ -97,7 +96,7 @@ public abstract class BaseAction extends ActionSupport implements ServletRequest
 			return LOGIN;
 		}
 		if (user != null) {
-			for (AccessRole requiredRole : getRequiredAccessRoles()) {
+			for (String requiredRole : getRequiredAccessRoles()) {
 				if (!user.getAccessRoles().contains(requiredRole)) {
 					return PERMISSION_DENIED;
 				}
@@ -133,8 +132,8 @@ public abstract class BaseAction extends ActionSupport implements ServletRequest
 	 * 
 	 * @return set of roles required to view this page
 	 */
-	protected Set<AccessRole> getRequiredAccessRoles() {
-		return new HashSet<AccessRole>();
+	protected Set<String> getRequiredAccessRoles() {
+		return new HashSet<String>();
 	}
 	
 	/**
