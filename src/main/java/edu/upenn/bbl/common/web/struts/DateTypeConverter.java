@@ -22,13 +22,24 @@ public class DateTypeConverter extends StrutsTypeConverter {
 	private static final Logger LOG = LoggerFactory.getLogger(DateTypeConverter.class.getName());
 	
 	/**
-	 * This format is useful because it is the default Struts2 converted format (i.e. when
-	 * struts populates text fields with dates, this is the default format displayed).
+	 * This format is useful because it is the default toString format for java.sql.Date,
+	 * which is frequently the type of date being converted.
 	 */
 	private static final String DATE_FORMAT_STR = "yyyy-MM-dd";
 	
 	/**
-	 * Converts a string in the format YYYY-MM-DD to a <code>java.util.Date</code>
+	 * Returns the format of the String to convert to or be created from a Date.
+	 * This method should be overridden in child classes that prefer a different
+	 * date format than the default.
+	 * 
+	 * @return date format
+	 */
+	protected String getDateFormatString() {
+		return DATE_FORMAT_STR;
+	}
+	
+	/**
+	 * Converts a string in the format of getDateFormatString() to a <code>java.util.Date</code>
 	 * object.  If the value is misformatted, a TypeConversionException is thrown.
 	 * 
 	 * @param map property map
@@ -41,13 +52,14 @@ public class DateTypeConverter extends StrutsTypeConverter {
 	@Override
 	@SuppressWarnings("unchecked")
 	public Object convertFromString(Map map, String[] values, Class toClass) {
-		LOG.info("convertFromString being called with: " + map + ", [" + StringUtils.join(values, ",") + "], " + toClass);
+		LOG.info("convertFromString being called with: " + map + ", [" +
+				StringUtils.join(values, ",") + "], " + toClass + " and using " + getDateFormatString());
 		if (!toClass.equals(Date.class)) {
 			LOG.error("Bad Class");
 			throw new IllegalArgumentException(
 					"This method only converts to " + Date.class.getName());
 		}
-		SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT_STR);
+		SimpleDateFormat formatter = new SimpleDateFormat(getDateFormatString());
 		if (values.length != 1) {
 			throw new IllegalArgumentException(
 					"This method only accepts a single value in the array, not " + values.length);
@@ -56,19 +68,21 @@ public class DateTypeConverter extends StrutsTypeConverter {
 			if (StringUtils.isEmpty(values[0])) {
 				return null;
 			}
-			return formatter.parse(values[0]);
+			Date d = formatter.parse(values[0]);
+			LOG.info("Will return " + d);
+			return d;
 		}
 		catch (ParseException pe) {
 			LOG.error("Unable to convert the following value using (" + 
-					DATE_FORMAT_STR + "): " + values[0]);
+					getDateFormatString() + "): " + values[0]);
 			throw new TypeConversionException(
 					"Unable to convert the following value using (" + 
-					DATE_FORMAT_STR + "): " + values[0], pe);
+					getDateFormatString() + "): " + values[0], pe);
 		}
 	}
 	
 	/**
-	 * Converts a java.util.Date to a String in the format YYYY-MM-DD.
+	 * Converts a java.util.Date to a String in the format of getDateFormatString().
 	 * 
 	 * @param map property map
 	 * @param value value to be converted
@@ -78,12 +92,12 @@ public class DateTypeConverter extends StrutsTypeConverter {
 	@Override
 	@SuppressWarnings("unchecked")
 	public String convertToString(Map map, Object value) {
-		LOG.info("convertToString being called with: " + map + ", " + value + ", " + value.getClass());
+		LOG.info("convertToString being called with: " + map + ", " + value + ", " + value.getClass() + " and using " + getDateFormatString());
 		if (value == null) {
 			return "";
 		}
 		if (value instanceof Date) {
-			SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT_STR);
+			SimpleDateFormat formatter = new SimpleDateFormat(getDateFormatString());
 			return formatter.format((Date)value);
 		}
 		throw new IllegalArgumentException(

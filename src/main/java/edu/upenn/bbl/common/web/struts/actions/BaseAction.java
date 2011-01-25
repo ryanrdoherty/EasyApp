@@ -13,6 +13,7 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
+import edu.upenn.bbl.common.auth.AuthenticationException;
 import edu.upenn.bbl.common.auth.User;
 import edu.upenn.bbl.common.enums.Ethnicity;
 import edu.upenn.bbl.common.enums.Handedness;
@@ -42,7 +43,7 @@ public abstract class BaseAction extends ActionSupport implements ServletRequest
 
 	private static final long serialVersionUID = 20100526L;
 	
-	static final String USER_KEY = "user_key";
+	static final String USER_KEY = "userName";
 	
 	/** Should be returned when permission to view a page or perform an action is denied */
 	protected static final String PERMISSION_DENIED = "permissionDenied";
@@ -107,13 +108,20 @@ public abstract class BaseAction extends ActionSupport implements ServletRequest
 
 	/**
 	 * Returns the user currently logged into this application, or null if
-	 * no one is logged in.
+	 * no one is logged in, if the user is no longer valid, or if an error
+	 * occurs (the error having been logged).
 	 * 
 	 * @return current user
 	 */
 	public final User getCurrentUser() {
-		Map<String, Object> session = ActionContext.getContext().getSession();
-		return (User)session.get(USER_KEY);
+		try {
+			return LoginAction.getAuthenticator().getUnauthenticatedUser(
+					(String)ActionContext.getContext().getSession().get(USER_KEY));
+		}
+		catch (AuthenticationException ae) {
+			LOG.error("Error occured while trying to authenticate user", ae);
+			return null;
+		}
 	}
 
 	/**

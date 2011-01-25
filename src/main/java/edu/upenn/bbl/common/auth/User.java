@@ -60,16 +60,43 @@ public class User {
 	public void setEmailAddress(String emailAddress) {
 		_emailAddress = emailAddress;
 	}
-	
+
+	/**
+	 * Returns set of access roles currently given to this user
+	 * 
+	 * @return set of roles
+	 */
 	public Set<String> getAccessRoles() {
 		return _accessRoles;
 	}
-	public void setAccessRoles(Set<String> accessRoles) {
+ 	public void setAccessRoles(Set<String> accessRoles) {
 		_accessRoles = accessRoles;
 	}
+	
+	/**
+	 * Returns true if passed role is among this user's roles, else false
+	 * 
+	 * @param accessRole access role to test for
+	 * @return true if user is in role, else false
+	 */
+	public boolean hasAccessRole(String accessRole) {
+		return _accessRoles.contains(accessRole);
+	}
+	
+	/**
+	 * Adds single access role to this user
+	 * 
+	 * @param accessRole role to add
+	 */
 	public void addAccessRole(String accessRole) {
 		_accessRoles.add(accessRole);
 	}
+	
+	/**
+	 * Adds multiple access roles to this user at one time
+	 * 
+	 * @param accessRoles roles to add
+	 */
 	public void addAccessRoles(Collection<String> accessRoles) {
 		_accessRoles.addAll(accessRoles);
 	}

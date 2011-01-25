@@ -118,4 +118,28 @@ public class EnumUtil {
 		}
 		return description.toString();
 	}
+	
+	/**
+	 * Examines the passed value and determines whether it can be converted into an enum
+	 * value of the same type as the defaultValue.  If it can, converts it and returns.  If not,
+	 * or if the value is null, returns defaultValue.
+	 * 
+	 * @param <T> type of value to be returned
+	 * @param defaultValue returned if unable to convert value
+	 * @param value string value to be converted
+	 * @return Enum represented by value of the same type as defaultValue, or defaultValue
+	 * if value is null or cannot be converted
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends Enum<?>> T getDefaultIfNullOrBad(T defaultValue, String value) {
+		if (value == null) {
+			return defaultValue;
+		}
+		try {
+			return (T)T.valueOf(defaultValue.getClass(), value);
+		}
+		catch (IllegalArgumentException iae) {
+			return defaultValue;
+		}
+	}
 }

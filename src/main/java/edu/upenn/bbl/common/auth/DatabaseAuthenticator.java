@@ -34,7 +34,7 @@ public class DatabaseAuthenticator implements Authenticator {
 	private static Logger LOG = LoggerFactory.getLogger(DatabaseAuthenticator.class.getName());
 	
 	private static final String GET_UNAUTH_USER_ATTRIBUTES =
-		"select user_name, fname, lname, coordinator from users where user_name = ?";
+		"select user_name, fname, lname from users where user_name = ?";
 
 	private static final String GET_AUTH_USER_ATTRIBUTES =
 		GET_UNAUTH_USER_ATTRIBUTES + " and user_pass = ?";
@@ -104,10 +104,6 @@ public class DatabaseAuthenticator implements Authenticator {
 				u.setUsername(rs.getString(1));
 				u.setFirstName(rs.getString(2));
 				u.setLastName(rs.getString(3));
-				String coord = rs.getString(4);
-				if (coord != null && coord.equals("Y")) {
-					u.addAccessRole("COORDINATOR");
-				}
 				u.addAccessRoles(getAccessRoles(u));
 				return u;
 			}

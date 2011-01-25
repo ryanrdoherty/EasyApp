@@ -45,14 +45,14 @@ public class LoginAction extends BaseAction {
 		return false;
 	}
 
-	private static Authenticator getAuthenticator() {
+	static Authenticator getAuthenticator() {
 		try {
 			AuthConfig authConfig = new AuthConfig(AUTH_CONFIG_BUNDLE);
 			return AuthFactory.getAuthenticator(authConfig);
 		}
 		catch (Exception e1) {
 			LOG.warn("Unable to look up authentication properties using bundle " +
-					"(bundle may not be present).  Will use default authenticator.", e1);
+					"(bundle may not be present).  Will use default authenticator.");
 			try {
 				return AuthFactory.getAuthenticator();
 			}
@@ -83,7 +83,7 @@ public class LoginAction extends BaseAction {
 			_message = "Invalid username/password combination.  Please try again.";
 			return INPUT;
 		}
-		ActionContext.getContext().getSession().put(BaseAction.USER_KEY, user);
+		ActionContext.getContext().getSession().put(BaseAction.USER_KEY, user.getUsername());
 		return SUCCESS;
 	}
 

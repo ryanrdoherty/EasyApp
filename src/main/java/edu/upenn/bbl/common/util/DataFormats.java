@@ -25,4 +25,15 @@ public class DataFormats {
 		String suffix = (name.getSuffix() == null ? "" : " " + name.getSuffix().getDescription());
 		return (first + mi + last + suffix).trim();
 	}
+	
+	/**
+	 * Returns the uppercase value of the passed value, or null if
+	 * null is passed in.
+	 * 
+	 * @param value value to be uppercased
+	 * @return uppercase value or null
+	 */
+	public static String nullSafeUpper(String value) {
+		return (value == null ? null : value.toUpperCase());
+	}
 }
