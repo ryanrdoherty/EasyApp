@@ -2,7 +2,6 @@ package edu.upenn.bbl.common.web.struts;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -54,23 +53,25 @@ public class DateTypeConverter extends StrutsTypeConverter {
 	public Object convertFromString(Map map, String[] values, Class toClass) {
 		LOG.info("convertFromString being called with: " + map + ", [" +
 				StringUtils.join(values, ",") + "], " + toClass + " and using " + getDateFormatString());
-		if (!toClass.equals(Date.class)) {
+		if (!toClass.equals(java.util.Date.class) && !toClass.equals(java.sql.Date.class)) {
 			LOG.error("Bad Class");
 			throw new IllegalArgumentException(
-					"This method only converts to " + Date.class.getName());
+					"This method only converts to " + java.util.Date.class.getName() + " or " + java.util.Date.class.getName());
 		}
 		SimpleDateFormat formatter = new SimpleDateFormat(getDateFormatString());
 		if (values.length != 1) {
 			throw new IllegalArgumentException(
 					"This method only accepts a single value in the array, not " + values.length);
-		}			
+		}
 		try {
 			if (StringUtils.isEmpty(values[0])) {
 				return null;
 			}
-			Date d = formatter.parse(values[0]);
-			LOG.info("Will return " + d);
-			return d;
+			java.util.Date utilDate = formatter.parse(values[0]);
+			if (toClass.equals(java.sql.Date.class)) {
+				return new java.sql.Date(utilDate.getTime());
+			}
+			return utilDate;
 		}
 		catch (ParseException pe) {
 			LOG.error("Unable to convert the following value using (" + 
@@ -96,12 +97,12 @@ public class DateTypeConverter extends StrutsTypeConverter {
 		if (value == null) {
 			return "";
 		}
-		if (value instanceof Date) {
+		if (value instanceof java.util.Date || value instanceof java.sql.Date) {
 			SimpleDateFormat formatter = new SimpleDateFormat(getDateFormatString());
-			return formatter.format((Date)value);
+			return formatter.format((java.util.Date)value);
 		}
 		throw new IllegalArgumentException(
-				"This method only converts objects of type " + Date.class.getName());
+				"This method only converts objects of type " + java.util.Date.class.getName() + " or " + java.sql.Date.class.getName());
 	}
 
 }
