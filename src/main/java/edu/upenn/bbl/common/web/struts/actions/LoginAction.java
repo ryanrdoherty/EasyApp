@@ -51,8 +51,8 @@ public class LoginAction extends BaseAction {
 			return AuthFactory.getAuthenticator(authConfig);
 		}
 		catch (Exception e1) {
-			LOG.warn("Unable to look up authentication properties using bundle " +
-					"(bundle may not be present).  Will use default authenticator.");
+			LOG.debug("Unable to look up authentication properties using bundle " +
+					  "(bundle may not be present).  Will use default authenticator.");
 			try {
 				return AuthFactory.getAuthenticator();
 			}
