@@ -5,7 +5,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 
 /**
- * Represents a column in a database table, and the attibutes one may
+ * Represents a column in a database table, and the attributes one may
  * want to assign to it.
  * 
  * @author rdoherty

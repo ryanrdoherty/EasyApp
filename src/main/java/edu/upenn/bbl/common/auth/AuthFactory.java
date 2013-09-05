@@ -36,9 +36,22 @@ public class AuthFactory {
 				return new DatabaseAuthenticator(config);
 			case LDAP:
 				return new LdapAuthenticator(config);
+			case CUSTOM_CLASS:
+				return getCustomAuthenticator(config.getAuthClassName());
 			default:
 				throw new UnsupportedOperationException(
 					"Auth config type " + config.getClass() + " is not yet supported.");
+		}
+	}
+
+	private static Authenticator getCustomAuthenticator(String authClassName) throws AuthenticationException {
+		try {
+			@SuppressWarnings("unchecked")
+			Class<? extends Authenticator> clazz = (Class<? extends Authenticator>)Class.forName(authClassName);
+			return clazz.newInstance();
+		}
+		catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+			throw new AuthenticationException("Unable to create Authenticator", e);
 		}
 	}
 }

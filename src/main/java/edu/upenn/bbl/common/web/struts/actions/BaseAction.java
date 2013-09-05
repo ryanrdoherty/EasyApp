@@ -1,14 +1,20 @@
 package edu.upenn.bbl.common.web.struts.actions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.interceptor.ServletRequestAware;
+import org.apache.struts2.interceptor.ServletResponseAware;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -39,9 +45,11 @@ import edu.upenn.bbl.common.util.PropertyMapLoader;
  * 
  * @author rdoherty
  */
-public abstract class BaseAction extends ActionSupport implements ServletRequestAware {
+public abstract class BaseAction extends ActionSupport implements ServletRequestAware, ServletResponseAware {
 
 	private static final long serialVersionUID = 20100526L;
+	
+	private static final Logger LOG = LoggerFactory.getLogger(BaseAction.class.getName());
 	
 	static final String USER_KEY = "userName";
 	
@@ -66,6 +74,8 @@ public abstract class BaseAction extends ActionSupport implements ServletRequest
 	}
 	
 	private String _originalRequestUrl;
+	private List<Cookie> _sentCookies;
+	private HttpServletResponse _response;
 	
 	/**
 	 * Returns whether this action should require a logged in user
@@ -84,6 +94,16 @@ public abstract class BaseAction extends ActionSupport implements ServletRequest
 	protected abstract String doWork() throws Exception;
 
 	/**
+	 * Try to log in user automatically using cookies or some other mechanism
+	 * (implementation dependent).
+	 * 
+	 * @throws Exception if something goes wrong
+	 */
+	protected void doAutoLogin() throws Exception {
+	  // default behavior: auto-login disabled
+	}
+	
+	/**
 	 * Method called by Struts to initiate action logic.  Takes care of user
 	 * authentication via actionRequiresLogin() and access roles.  Simply
 	 * returns the value returned by doWork();
@@ -91,10 +111,16 @@ public abstract class BaseAction extends ActionSupport implements ServletRequest
 	 * @return action status
 	 * @throws Exception if something goes wrong
 	 */
+	@Override
 	public final String execute() throws Exception {
 		User user = getCurrentUser();
 		if (user == null && actionRequiresLogin()) {
-			return LOGIN;
+		  // user must be logged in and is not; try auto-login
+		  doAutoLogin();
+		  if (getCurrentUser() == null) {
+		    // auto login disabled or failed
+		    return LOGIN;
+		  }
 		}
 		if (user != null) {
 			for (String requiredRole : getRequiredAccessRoles()) {
@@ -115,8 +141,9 @@ public abstract class BaseAction extends ActionSupport implements ServletRequest
 	 */
 	public final User getCurrentUser() {
 		try {
-			return LoginAction.getAuthenticator().getUnauthenticatedUser(
-					(String)ActionContext.getContext().getSession().get(USER_KEY));
+		  String currentUsername = (String)ActionContext.getContext().getSession().get(USER_KEY);
+		  return (currentUsername == null ? null :
+		    LoginAction.getAuthenticator().getUnauthenticatedUser(currentUsername));
 		}
 		catch (AuthenticationException ae) {
 			LOG.error("Error occured while trying to authenticate user", ae);
@@ -157,14 +184,26 @@ public abstract class BaseAction extends ActionSupport implements ServletRequest
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void setServletRequest(HttpServletRequest request) {
 		_originalRequestUrl = request.getRequestURL().toString();
 		if (request.getQueryString() != null) {
 			_originalRequestUrl += "?" + request.getQueryString();
 		}
 		LOG.debug("Have set request url to: " + _originalRequestUrl);
+		Cookie[] cookies = request.getCookies();
+		_sentCookies = (cookies == null || cookies.length == 0) ?
+				new ArrayList<Cookie>() : Arrays.asList(cookies);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setServletResponse(HttpServletResponse response) {
+	  _response = response;
+	}
+	
 	/**
 	 * Returns a map of application properties read from the application.properties
 	 * file.  This allows applications to add their own custom properties to the file
@@ -183,6 +222,22 @@ public abstract class BaseAction extends ActionSupport implements ServletRequest
 	 */
 	public String getApplicationName() {
 		return _propertyMap.get(APP_NAME_KEY);
+	}
+
+	/**
+	 * @return list of cookies sent along with HTTP request
+	 */
+	public List<Cookie> getCookies() {
+	  return _sentCookies;
+	}
+	
+	/**
+	 * Adds the passed cookie to the HTTP response
+	 * 
+	 * @param cookie cookie to attach to response
+	 */
+	public void addCookie(Cookie cookie) {
+	  _response.addCookie(cookie);
 	}
 	
 	/**

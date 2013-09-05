@@ -72,7 +72,7 @@ public abstract class JpaDataManager implements DataManager {
 	 */
 	@Override
 	public final <T extends Identifiable> T findById(Class<T> obj, Long id) {
-		return (T)getEm().find(obj, id);
+		return getEm().find(obj, id);
 	}
 
 	/**

@@ -17,9 +17,10 @@ import java.sql.Statement;
 import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 /**
- * An implementation of <code>java.sql.Connection</code> that adhere's to
+ * An implementation of <code>java.sql.Connection</code> that adheres to
  * the general contract for java Connection objects.  For example, the user
  * does not need to do anything more than call close() to release this
  * connection.  This was necessary to support the Connection API while
@@ -39,6 +40,7 @@ public class DbConnection implements Connection {
 	 * @param child connection to be wrapped
 	 */
 	public DbConnection(DbConnectionBroker parent, Connection child) {
+		_parent = parent;
 		_child = child;
 	}
 
@@ -350,5 +352,36 @@ public class DbConnection implements Connection {
 	@Override
 	public <T> T unwrap(Class<T> iface) throws SQLException {
 		return _child.unwrap(iface);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void setSchema(String schema) throws SQLException {
+		_child.setSchema(schema);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getSchema() throws SQLException {
+		return _child.getSchema();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void abort(Executor executor) throws SQLException {
+		_child.abort(executor);		
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void setNetworkTimeout(Executor executor, int milliseconds)
+			throws SQLException {
+		_child.setNetworkTimeout(executor, milliseconds);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int getNetworkTimeout() throws SQLException {
+		return _child.getNetworkTimeout();
 	}
 }

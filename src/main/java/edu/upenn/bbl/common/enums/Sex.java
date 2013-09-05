@@ -35,6 +35,7 @@ public enum Sex implements Named, Described, Coded {
 		throw new IllegalArgumentException("No enum exists for this code ("+code+")");
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	public Sex getOpposite() {
 		switch(this) {
 			case MALE: return FEMALE;

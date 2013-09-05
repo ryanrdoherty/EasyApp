@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
@@ -201,6 +202,7 @@ public class DbConnectionBroker implements DataSource, Runnable {
      * result when the application fails to close a Statement).
      * This method acts as fault tolerance for bad connection/statement programming.
      */
+    @Override
     public void run() {
     	
         boolean forever = true;
@@ -304,7 +306,7 @@ public class DbConnectionBroker implements DataSource, Runnable {
 		    				stmt.close();
 		    			}
 		    		}
-		    		catch(SQLException e1){};
+		    		catch(SQLException e1){}
 		    	}
 		    }
 		    
@@ -335,6 +337,7 @@ public class DbConnectionBroker implements DataSource, Runnable {
      * 2 seconds and tries again, up to ten times.  After that, it
      * returns a null.
      */
+    @Override
     public Connection getConnection() { 
     
         Connection conn=null;
@@ -652,6 +655,12 @@ public class DbConnectionBroker implements DataSource, Runnable {
 	@Override
 	public void setLogWriter(PrintWriter out) throws SQLException {
 		// do nothing here; logging by calling classes is disabled
+	}
+
+	@Override
+	public java.util.logging.Logger getParentLogger()
+			throws SQLFeatureNotSupportedException {
+		throw new SQLFeatureNotSupportedException("Do not currently support this feature.");
 	}
 
 } // End class

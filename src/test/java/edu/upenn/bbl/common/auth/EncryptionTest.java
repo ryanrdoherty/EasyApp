@@ -38,7 +38,10 @@ public class EncryptionTest {
 	@Test
 	public void testEncryption() {
 		for (Algorithm alg : Algorithm.values()) {
-			assertEquals(OUTPUT_MAP.get(alg), EncryptionUtil.encrypt(TEST_STRING, alg));
+		  String encrypted = EncryptionUtil.encrypt(TEST_STRING, alg);
+		  System.out.println("Test string '" + TEST_STRING + "' " +
+		  		"encrypted with " + alg.toString() + " = " + encrypted);
+			assertEquals(OUTPUT_MAP.get(alg), encrypted);
 		}
 	}
 }

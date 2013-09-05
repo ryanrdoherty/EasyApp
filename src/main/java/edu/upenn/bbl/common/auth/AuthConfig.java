@@ -5,6 +5,8 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.upenn.bbl.common.exception.ConfigurationRuntimeException;
 
@@ -17,6 +19,8 @@ import edu.upenn.bbl.common.exception.ConfigurationRuntimeException;
  */
 public class AuthConfig implements Comparator<AuthConfig>, Comparable<AuthConfig> {
 
+  private static final Logger LOG = LoggerFactory.getLogger(AuthConfig.class.getName());
+  
 	/**
 	 * An authorization source type (what type of resource is
 	 * being queried for authorization credentials).
@@ -25,18 +29,21 @@ public class AuthConfig implements Comparator<AuthConfig>, Comparable<AuthConfig
 	 */
 	public enum Type {
 		DATABASE,
-		LDAP;
+		LDAP,
+		CUSTOM_CLASS;
 	}
 
 	public static final String AUTH_TYPE = "auth.type";
 	public static final String AUTH_CONNECTION_URL = "auth.connection.url";
 	public static final String AUTH_NAME = "auth.login.name";
 	public static final String AUTH_PASSWORD = "auth.password";
+	public static final String AUTH_CLASS = "auth.classname";
 	
 	private Type _type;
 	private String _connectionUrl;
 	private String _loginName;
 	private String _password;
+	private String _authClassName;
 	
 	/**
 	 * No-param constructor.  User is required to set attributes.
@@ -54,9 +61,14 @@ public class AuthConfig implements Comparator<AuthConfig>, Comparable<AuthConfig
 		try {
 			ResourceBundle bundle = ResourceBundle.getBundle(bundleName);
 			setType(AuthConfig.Type.valueOf(bundle.getString(AUTH_TYPE).toUpperCase()));
-			setConnectionUrl(bundle.getString(AUTH_CONNECTION_URL));
-			setLoginName(bundle.getString(AUTH_NAME));
-			setPassword(bundle.getString(AUTH_PASSWORD));
+			if (Type.DATABASE.equals(_type)) {
+			  setConnectionUrl(bundle.getString(AUTH_CONNECTION_URL));
+			  setLoginName(bundle.getString(AUTH_NAME));
+			  setPassword(bundle.getString(AUTH_PASSWORD));
+			}
+			else if (Type.CUSTOM_CLASS.equals(_type)) {
+			  setAuthClassName(bundle.getString(AUTH_CLASS));
+			}
 			assertComplete();
 		}
 		catch (AuthenticationException ae) {
@@ -121,6 +133,20 @@ public class AuthConfig implements Comparator<AuthConfig>, Comparable<AuthConfig
 	}
 
 	/**
+	 * @return class name of custom authenticator
+	 */
+	public String getAuthClassName() {
+		return _authClassName;
+	}
+
+	/**
+	 * @param authClassName custom authentication class for this configuration
+	 */
+	public void setAuthClassName(String authClassName) {
+		_authClassName = authClassName;
+	}
+  
+	/**
 	 * Creates a copy of this object and returns it
 	 * 
 	 * @return copy with identical config params
@@ -131,6 +157,7 @@ public class AuthConfig implements Comparator<AuthConfig>, Comparable<AuthConfig
 		config.setConnectionUrl(_connectionUrl);
 		config.setLoginName(_loginName);
 		config.setPassword(_password);
+		config.setAuthClassName(_authClassName);
 		return config;
 	}
 	
@@ -150,6 +177,9 @@ public class AuthConfig implements Comparator<AuthConfig>, Comparable<AuthConfig
 		}
 		if (o1._password.compareTo(o2._password) != 0) {
 			return o1._password.compareTo(o2._password);
+		}
+		if (o1._authClassName.compareTo(o2._authClassName) != 0) {
+		  return o1._authClassName.compareTo(o2._authClassName);
 		}
 		return 0;
 	}
@@ -186,11 +216,32 @@ public class AuthConfig implements Comparator<AuthConfig>, Comparable<AuthConfig
 	 */
 	public void assertComplete() throws AuthenticationException {
 		// for now, just make sure type is database and the other properties are set
-		if (!_type.equals(Type.DATABASE) ||
-			StringUtils.isEmpty(_connectionUrl) ||
-			StringUtils.isEmpty(_loginName) ||
-			StringUtils.isEmpty(_password)) {
+		if (_type.equals(Type.DATABASE) &&
+			(StringUtils.isEmpty(_connectionUrl) ||
+			 StringUtils.isEmpty(_loginName) ||
+			 StringUtils.isEmpty(_password))) {
 			throw new AuthenticationException("Not all parameters have been set for this configuration.");
+		}
+		else if (_type.equals(Type.CUSTOM_CLASS) && !authClassExists(_authClassName)) {
+			throw new AuthenticationException("Unable to load Authenticator class: " + _authClassName);
+		}
+		else if (_type.equals(Type.LDAP)){
+			throw new AuthenticationException("LDAP is not a supported authentication strategy at this time.");
+		}
+	}
+
+	private boolean authClassExists(String authClassName) {
+		try {
+			Class<?> clazz = Class.forName(authClassName);
+			if (!Authenticator.class.isAssignableFrom(clazz)) {
+				LOG.warn("Configured authenticator class " + clazz.getName() +
+						" found, but is not an Authenticator.");
+				return false;
+			}
+			return true;
+		}
+		catch(ClassNotFoundException e) {
+			return false;
 		}
 	}
 	

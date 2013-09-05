@@ -47,7 +47,7 @@ public class EnumUtil {
 	 * @return enum value
 	 * @throws IllegalArgumentException if value is non-empty, but can still not be converted
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <T extends Enum<?>> T getNullSafeEnum(Class<T> clazz, String value) {
 		return (T)(StringUtils.isEmpty(value) ? null : Enum.valueOf((Class<? extends Enum>)clazz, value));
 	}

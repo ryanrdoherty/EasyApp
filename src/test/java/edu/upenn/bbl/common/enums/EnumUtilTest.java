@@ -9,8 +9,8 @@ import edu.upenn.bbl.common.util.EnumUtil;
 public class EnumUtilTest {
 	
 	private enum MyEnum {
-		A, B, C
-	};
+		A, B, C;
+	}
 	
 	@Test
 	public void testEnumConversion() throws Exception {

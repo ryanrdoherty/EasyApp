@@ -53,7 +53,8 @@ public class EncryptionUtil {
 		try {
 			MessageDigest md = MessageDigest.getInstance(algorithm.getAlgInputName());
 			md.update(plaintext.getBytes("UTF-8"));
-			String encodingWithCRLF = Base64.encodeBase64String(md.digest());
+			// Used to use this (in codec v1.4): Base64.encodeBase64String(md.digest());
+			String encodingWithCRLF = new String(Base64.encodeBase64(md.digest(), true));
 			// remove CRLF before returning encrypted value
 			return encodingWithCRLF.substring(0, encodingWithCRLF.length() - 2);
 		}

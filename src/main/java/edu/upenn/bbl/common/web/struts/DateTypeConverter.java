@@ -49,7 +49,7 @@ public class DateTypeConverter extends StrutsTypeConverter {
 	 * @throws IllegalArgumentException if toClass is not java.util.Date, or if values contains 0 or more than 1 elements
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes" })
 	public Object convertFromString(Map map, String[] values, Class toClass) {
 		LOG.info("convertFromString being called with: " + map + ", [" +
 				StringUtils.join(values, ",") + "], " + toClass + " and using " + getDateFormatString());
@@ -91,9 +91,10 @@ public class DateTypeConverter extends StrutsTypeConverter {
 	 * @throws IllegalArgumentException if value is not of type java.util.Date
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes" })
 	public String convertToString(Map map, Object value) {
-		LOG.info("convertToString being called with: " + map + ", " + value + ", " + value.getClass() + " and using " + getDateFormatString());
+		Class valueClass = (value == null ? null : value.getClass());
+		LOG.info("convertToString being called with: " + map + ", " + value + ", " + valueClass + " and using " + getDateFormatString());
 		if (value == null) {
 			return "";
 		}

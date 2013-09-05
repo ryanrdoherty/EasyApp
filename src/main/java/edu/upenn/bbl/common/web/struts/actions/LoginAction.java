@@ -1,5 +1,10 @@
 package edu.upenn.bbl.common.web.struts.actions;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.Cookie;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +21,11 @@ import edu.upenn.bbl.common.exception.BBLRuntimeException;
 
 /**
  * Attempts to log user into the application using the authentication settings in
- * authentication.properties.
+ * authentication.properties.  A form submitting to this action should contain
+ * the following parameters:
+ *     username:   username
+ *     password:   password for user
+ *     requestUrl: URL to return to after successful authentication
  * 
  * @author rdoherty
  */
@@ -51,8 +60,8 @@ public class LoginAction extends BaseAction {
 			return AuthFactory.getAuthenticator(authConfig);
 		}
 		catch (Exception e1) {
-			LOG.debug("Unable to look up authentication properties using bundle " +
-					  "(bundle may not be present).  Will use default authenticator.");
+			LOG.warn("Unable to look up authentication properties using bundle " +
+					  "(bundle may not be present).  Will use default authenticator.", e1);
 			try {
 				return AuthFactory.getAuthenticator();
 			}
@@ -83,8 +92,25 @@ public class LoginAction extends BaseAction {
 			_message = "Invalid username/password combination.  Please try again.";
 			return INPUT;
 		}
-		ActionContext.getContext().getSession().put(BaseAction.USER_KEY, user.getUsername());
+		setCurrentUser(user);
+		for (Cookie cookie : getAdditionalCookies()) {
+		  addCookie(cookie);
+		}
 		return SUCCESS;
+	}
+
+	public static void setCurrentUser(User user) {
+		ActionContext.getContext().getSession().put(BaseAction.USER_KEY, user.getUsername());
+	}
+
+	/**
+	 * Returns any additional cookies child action wishes to set.  Default
+	 * behavior is to return an empty list.
+	 * 
+	 * @return list of cookies to set upon successful login
+	 */
+	protected List<Cookie> getAdditionalCookies() {
+		return new ArrayList<Cookie>();
 	}
 
 	/**
