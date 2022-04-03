@@ -1,7 +1,8 @@
 package edu.upenn.bbl.common.web.struts;
 
-import org.junit.Test;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+import org.conical.common.bbl.web.struts.DateTypeConverter;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DateConverterTest {
 	
@@ -34,8 +35,8 @@ public class DateConverterTest {
 		String sqlStr = converter.convertToString(null, sqlDate);
 		System.out.println("java.sql.Date: " + sqlStr);
 		
-		Assert.assertEquals(dateStr, utilStr);
-		Assert.assertEquals(dateStr, sqlStr);
+		assertEquals(dateStr, utilStr);
+		assertEquals(dateStr, sqlStr);
 	}
 	
 }

@@ -1,9 +1,10 @@
 package edu.upenn.bbl.common;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.commons.lang.StringUtils;
-import org.junit.Test;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Test;
+
 
 /**
  * Example unit test that can be copied and modified to test new classes

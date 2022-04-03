@@ -3,11 +3,11 @@ package edu.upenn.bbl.common.auth;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.conical.common.bbl.auth.EncryptionUtil;
+import org.conical.common.bbl.auth.EncryptionUtil.Algorithm;
+import org.junit.jupiter.api.Test;
 
-import edu.upenn.bbl.common.auth.EncryptionUtil.Algorithm;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests the EncryptionUtil class for a variety of algorithms.
