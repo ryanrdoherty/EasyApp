@@ -6,7 +6,5 @@ package edu.upenn.bbl.common.web.util;
  * @author rdoherty
  */
 public enum ActionOperation {
-	CREATE,
-	UPDATE,
-	DELETE;
+  CREATE, UPDATE, DELETE;
 }
