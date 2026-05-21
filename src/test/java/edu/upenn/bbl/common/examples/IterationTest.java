@@ -2,8 +2,8 @@ package edu.upenn.bbl.common.examples;
 
 import java.util.Iterator;
 
-import org.apache.commons.lang.StringUtils;
-import org.junit.Test;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Test;
 
 public class IterationTest {
 

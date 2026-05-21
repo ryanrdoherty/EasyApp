@@ -1,0 +1,13 @@
+org.conical.common.bbl.web.util
+org.conical.common.bbl.web.struts
+org.conical.common.bbl.web.struts.actions
+org.conical.common.bbl.web.client
+org.conical.common.bbl.ejb
+org.conical.common.bbl.exception
+org.conical.common.bbl.jpa
+org.conical.common.bbl.util
+org.conical.common.bbl.auth
+org.conical.common.bbl.db
+org.conical.common.bbl.db.querier
+org.conical.common.bbl.enums
+org.conical.common.bbl.enums.ifc

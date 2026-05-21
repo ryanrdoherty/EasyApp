@@ -1,16 +1,15 @@
 package edu.upenn.bbl.common.enums;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
-
-import edu.upenn.bbl.common.util.EnumUtil;
+import org.conical.common.bbl.util.EnumUtil;
+import org.junit.jupiter.api.Test;
 
 public class EnumUtilTest {
 	
 	private enum MyEnum {
-		A, B, C
-	};
+		A, B, C;
+	}
 	
 	@Test
 	public void testEnumConversion() throws Exception {

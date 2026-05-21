@@ -3,11 +3,11 @@ package edu.upenn.bbl.common.auth;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.conical.common.bbl.auth.EncryptionUtil;
+import org.conical.common.bbl.auth.EncryptionUtil.Algorithm;
+import org.junit.jupiter.api.Test;
 
-import edu.upenn.bbl.common.auth.EncryptionUtil.Algorithm;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests the EncryptionUtil class for a variety of algorithms.
@@ -38,7 +38,10 @@ public class EncryptionTest {
 	@Test
 	public void testEncryption() {
 		for (Algorithm alg : Algorithm.values()) {
-			assertEquals(OUTPUT_MAP.get(alg), EncryptionUtil.encrypt(TEST_STRING, alg));
+		  String encrypted = EncryptionUtil.encrypt(TEST_STRING, alg);
+		  System.out.println("Test string '" + TEST_STRING + "' " +
+		  		"encrypted with " + alg.toString() + " = " + encrypted);
+			assertEquals(OUTPUT_MAP.get(alg), encrypted);
 		}
 	}
 }
