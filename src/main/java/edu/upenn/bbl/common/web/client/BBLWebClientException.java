@@ -9,18 +9,18 @@ import edu.upenn.bbl.common.exception.BBLRuntimeException;
  */
 public class BBLWebClientException extends BBLRuntimeException {
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  public BBLWebClientException(Exception cause) {
-    super(cause);
-  }
-
-  public BBLWebClientException(String message) {
-    super(message);
-  }
-
-  public BBLWebClientException(String message, Exception cause) {
-    super(message, cause);
-  }
+	public BBLWebClientException(Exception cause) {
+		super(cause);
+	}
+	
+	public BBLWebClientException(String message) {
+		super(message);
+	}
+	
+	public BBLWebClientException(String message, Exception cause) {
+		super(message, cause);
+	}
 
 }

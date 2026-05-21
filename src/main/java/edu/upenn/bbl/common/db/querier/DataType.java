@@ -6,5 +6,11 @@ package edu.upenn.bbl.common.db.querier;
  * @author rdoherty
  */
 public enum DataType {
-  INTEGER, FLOAT, DATE, STRING, ENUM, BINARY, UNDEFINED;
+	INTEGER,
+	FLOAT,
+	DATE,
+	STRING,
+	ENUM,
+	BINARY,
+	UNDEFINED;
 }
