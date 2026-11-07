@@ -23,7 +23,8 @@ public class PostgresDataSource extends PGSimpleDataSource {
 	 * 
 	 * @param url
 	 */
-	public void setURL(String url) {
+	@Override
+  public void setURL(String url) {
 		try {
 			String[] args = DatabaseType.POSTGRES.getUrlParts(url);
 			setServerNames(new String[] { args[0] });

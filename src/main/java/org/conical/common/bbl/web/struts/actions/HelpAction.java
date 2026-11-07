@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class HelpAction extends BaseAction {
 			_helpPageText = MessageFormat.format(DEFAULT_HELP_TEXT, _referringPage);
 			return SUCCESS;
 		}
-		URL url = new URL(_referringPage);
+		URL url = new URI(_referringPage).toURL();
 		String page = url.getPath();
 		// remove context root to get path within application
 		page = page.substring(page.indexOf('/', 1) + 1, page.length());

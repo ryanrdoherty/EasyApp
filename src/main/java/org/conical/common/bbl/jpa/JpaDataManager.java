@@ -1,8 +1,8 @@
 package org.conical.common.bbl.jpa;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 
 /**
  * Abstract implementation of DataManager that performs JPA operations within

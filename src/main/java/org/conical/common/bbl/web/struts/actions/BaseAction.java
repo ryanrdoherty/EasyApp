@@ -7,14 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.struts2.interceptor.ServletRequestAware;
-import org.apache.struts2.interceptor.ServletResponseAware;
+import org.apache.struts2.ActionContext;
+import org.apache.struts2.ActionSupport;
+import org.apache.struts2.action.ServletRequestAware;
+import org.apache.struts2.action.ServletResponseAware;
 import org.conical.common.bbl.auth.AuthenticationException;
 import org.conical.common.bbl.auth.User;
 import org.conical.common.bbl.enums.Ethnicity;
@@ -27,8 +25,9 @@ import org.conical.common.bbl.enums.SexualOrientation;
 import org.conical.common.bbl.enums.State;
 import org.conical.common.bbl.util.PropertyMapLoader;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionSupport;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * This should be the base class for all actions in Struts2-based
@@ -184,7 +183,7 @@ public abstract class BaseAction extends ActionSupport implements ServletRequest
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setServletRequest(HttpServletRequest request) {
+	public void withServletRequest(HttpServletRequest request) {
 		_originalRequestUrl = request.getRequestURL().toString();
 		if (request.getQueryString() != null) {
 			_originalRequestUrl += "?" + request.getQueryString();
@@ -199,7 +198,7 @@ public abstract class BaseAction extends ActionSupport implements ServletRequest
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setServletResponse(HttpServletResponse response) {
+	public void withServletResponse(HttpServletResponse response) {
 	  _response = response;
 	}
 	
