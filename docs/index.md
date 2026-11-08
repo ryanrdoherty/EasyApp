@@ -6,4 +6,4 @@ Later, it served as a core dependency of a [custom wedding website](http://mrfee
 
 In 2026, it received a long-needed upgrade to the latest Struts and other dependencies, resolving security issues, and making it compatible with the Servlet 6.1 Spec.
 
-Please see the [JavaDoc API](api/index.html) for more information.
+Please see the [JavaDoc API](apidocs/index.html) for more information.
