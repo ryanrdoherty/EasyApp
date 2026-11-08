@@ -49,7 +49,7 @@ public abstract class DataValidator {
 	}
 	
 	/**
-	 * Returns true if the passed value is <= maxLength, or if value is null or empty.
+	 * Returns true if the passed value is &lt;= maxLength, or if value is null or empty.
 	 * Otherwise returns false.  If false is returned, an error message is added detailing
 	 * the validation failure.
 	 * 
@@ -70,7 +70,7 @@ public abstract class DataValidator {
 	}
 
 	/**
-	 * Returns true if the passed value is <= maxLength and >= minLength, or if value is
+	 * Returns true if the passed value is &lt;= maxLength and &gt;= minLength, or if value is
 	 * null or empty.  Otherwise returns false.  If false is returned, an error message
 	 * is added detailing the validation failure.
 	 * 
