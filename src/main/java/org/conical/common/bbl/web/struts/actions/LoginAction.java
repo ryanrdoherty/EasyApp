@@ -3,11 +3,10 @@ package org.conical.common.bbl.web.struts.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.Cookie;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.struts2.ActionContext;
 import org.conical.common.bbl.auth.AuthConfig;
 import org.conical.common.bbl.auth.AuthFactory;
 import org.conical.common.bbl.auth.AuthenticationException;
@@ -16,7 +15,7 @@ import org.conical.common.bbl.auth.EncryptionUtil;
 import org.conical.common.bbl.auth.User;
 import org.conical.common.bbl.exception.BBLRuntimeException;
 
-import com.opensymphony.xwork2.ActionContext;
+import jakarta.servlet.http.Cookie;
 
 /**
  * Attempts to log user into the application using the authentication settings in

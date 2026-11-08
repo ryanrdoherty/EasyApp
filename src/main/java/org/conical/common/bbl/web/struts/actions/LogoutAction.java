@@ -3,28 +3,28 @@ package org.conical.common.bbl.web.struts.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.struts2.dispatcher.SessionMap;
-import org.apache.struts2.interceptor.ServletResponseAware;
+import org.apache.struts2.ActionSupport;
+import org.apache.struts2.action.ServletRequestAware;
+import org.apache.struts2.action.ServletResponseAware;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionSupport;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Logs user out of the application by invalidating the entire session
  * 
  * @author rdoherty
  */
-public class LogoutAction extends ActionSupport implements ServletResponseAware {
+public class LogoutAction extends ActionSupport implements ServletRequestAware, ServletResponseAware {
 
 	private static final Logger LOG = LogManager.getLogger(LogoutAction.class);
 
 	private static final long serialVersionUID = 20100528L;
 
+	private HttpServletRequest _request;
 	private HttpServletResponse _response;
 	
 	/**
@@ -34,9 +34,8 @@ public class LogoutAction extends ActionSupport implements ServletResponseAware 
 	 */
 	@Override
 	public String execute() throws Exception {
-		SessionMap<String, Object> session = (SessionMap<String, Object>)ActionContext.getContext().getSession();
 		try {
-			session.invalidate();
+		  _request.getSession().invalidate();
 			for (Cookie cookie : getAdditionalCookies()) {
 			  _response.addCookie(cookie);
 			}
@@ -58,8 +57,13 @@ public class LogoutAction extends ActionSupport implements ServletResponseAware 
 	}
 
 	@Override
-	public void setServletResponse(HttpServletResponse response) {
+	public void withServletResponse(HttpServletResponse response) {
 		_response = response;
 	}
-	
+
+  @Override
+  public void withServletRequest(HttpServletRequest request) {
+    _request = request;
+  }
+
 }
