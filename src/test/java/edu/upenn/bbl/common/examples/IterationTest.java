@@ -65,7 +65,7 @@ public class IterationTest {
 	}
 	
 	@Test
-	public void testCounter() throws Exception {
+	public void testCounter() {
 		System.out.println("Iteration and enhanced for loop example output:");
 		print(1, new Counter(5));
 		print(2, new Counter(5, 10));

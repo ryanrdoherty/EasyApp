@@ -10,7 +10,7 @@ package org.conical.common.bbl.auth;
  */
 public class LdapAuthenticator implements Authenticator {
 
-	public LdapAuthenticator(AuthConfig config) throws AuthenticationException {
+	public LdapAuthenticator(AuthConfig config) {
 		throw new UnsupportedOperationException("Implementation is incomplete.  This class should not be used.");
 	}
 

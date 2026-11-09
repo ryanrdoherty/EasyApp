@@ -7,12 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DateConverterTest {
 	
 	@Test
-	public void testFormatting() throws Exception {
+	public void testFormatting() {
 		doTest("1978-03-28", new DateTypeConverter());
 	}
 	
 	@Test
-	public void testCustomFormatting() throws Exception {
+	public void testCustomFormatting() {
 		doTest("03/28/1978", new DateTypeConverter() {
 			@Override protected String getDateFormatString() {
 				return "MM/dd/yyyy";}});

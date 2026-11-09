@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 public class SampleTest {
 
 	@Test
-	public void sampleTest() throws Exception {
+	public void sampleTest() {
 		String band = StringUtils.join(new String[]{"a", "a"}, "bb");
 		assertEquals(band, "abba");
 	}

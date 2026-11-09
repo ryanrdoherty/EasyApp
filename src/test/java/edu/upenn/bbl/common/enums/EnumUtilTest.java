@@ -12,7 +12,7 @@ public class EnumUtilTest {
 	}
 	
 	@Test
-	public void testEnumConversion() throws Exception {
+	public void testEnumConversion() {
 		MyEnum e1 = EnumUtil.getDefaultIfNullOrBad(MyEnum.A, null);
 		MyEnum e2 = EnumUtil.getDefaultIfNullOrBad(MyEnum.A, "A");
 		MyEnum e3 = EnumUtil.getDefaultIfNullOrBad(MyEnum.A, "B");
