@@ -6,11 +6,5 @@ package org.conical.common.bbl.db.querier;
  * @author rdoherty
  */
 public enum DataType {
-	INTEGER,
-	FLOAT,
-	DATE,
-	STRING,
-	ENUM,
-	BINARY,
-	UNDEFINED;
+  INTEGER, FLOAT, DATE, STRING, ENUM, BINARY, UNDEFINED;
 }

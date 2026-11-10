@@ -6,7 +6,5 @@ package org.conical.common.bbl.web.util;
  * @author rdoherty
  */
 public enum ActionOperation {
-	CREATE,
-	UPDATE,
-	DELETE;
+  CREATE, UPDATE, DELETE;
 }
